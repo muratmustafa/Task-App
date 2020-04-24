@@ -23,8 +23,7 @@ public class TaskDetailActivity extends AppCompatActivity {
     private CheckBox mDone;
     private EditText mShortName, mDescription;
     private Task mTask;
-    private static final String TASK = "task_object";
-
+    private static final String TASK = "TASK_OBJECT";
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
