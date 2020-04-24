@@ -4,13 +4,12 @@ import com.example.taskapp.model.Task;
 import com.example.taskapp.model.TaskRepository;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class TaskRepositoryInMemoryImpl implements TaskRepository {
 
     private static TaskRepositoryInMemoryImpl instance;
 
-    private List<Task> mTasks;
+    private ArrayList<Task> mTasks;
 
     public static synchronized TaskRepositoryInMemoryImpl getInstance() {
         if (instance == null) {
@@ -34,12 +33,12 @@ public class TaskRepositoryInMemoryImpl implements TaskRepository {
         myTask.setDone(true);
         mTasks.add(myTask);
 
-//        for (int i=0; i<40; i++)
-//            mTasks.add(new Task("Task" + i));
+        for (int i=0; i<5; i++)
+          mTasks.add(new Task("Task - " + i));
     }
 
     @Override
-    public List<Task> loadTasks() {
+    public ArrayList<Task> loadTasks() {
         return mTasks;
     }
 
