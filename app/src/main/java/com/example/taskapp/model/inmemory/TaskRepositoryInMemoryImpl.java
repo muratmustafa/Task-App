@@ -33,7 +33,7 @@ public class TaskRepositoryInMemoryImpl implements TaskRepository {
         myTask.setDone(true);
         mTasks.add(myTask);
 
-        for (int i=0; i<5; i++)
+        for (int i = 0; i < 5; i++)
           mTasks.add(new Task("Task - " + i));
     }
 

@@ -3,7 +3,6 @@ package com.example.taskapp.model;
 import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -11,7 +10,6 @@ import java.util.GregorianCalendar;
 @SuppressLint("ParcelCreator")
 public class Task implements Parcelable {
 
-    // simple ID generator
     private static int MAX_ID = 0;
 
     private int mId;
@@ -79,9 +77,6 @@ public class Task implements Parcelable {
 
     @Override
     public String toString() {
-
-        Log.d("Task", mDone ? "true" : "false");
-
         return mShortName;
     }
 

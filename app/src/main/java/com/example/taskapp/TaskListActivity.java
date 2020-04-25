@@ -2,6 +2,7 @@ package com.example.taskapp;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,7 +17,6 @@ import com.example.taskapp.model.Task;
 import com.example.taskapp.model.inmemory.TaskRepositoryInMemoryImpl;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class TaskListActivity extends AppCompatActivity {
 
@@ -24,12 +24,12 @@ public class TaskListActivity extends AppCompatActivity {
     private TaskAdapter adapter;
     private RecyclerView recyclerView;
 
-    private static final String TASK = "TASK_OBJECT";
+    private static final String TASKS = "TASK_OBJECTS";
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(TASK, tasksList);
+        outState.putParcelableArrayList(TASKS, tasksList);
     }
 
     @Override
@@ -43,11 +43,11 @@ public class TaskListActivity extends AppCompatActivity {
         TaskRepositoryInMemoryImpl taskRepo = TaskRepositoryInMemoryImpl.getInstance();
 
         if (savedInstanceState != null){
-            tasksList = savedInstanceState.getParcelableArrayList(TASK);
-            Log.d("savedInstanceState", "not null");
+            tasksList = savedInstanceState.getParcelableArrayList(TASKS);
+            Log.d("savedInstanceState", "savedInstanceState not null");
         }else{
-            Log.d("savedInstanceState", "null");
             tasksList = taskRepo.loadTasks();
+            Log.d("savedInstanceState", "savedInstanceState null");
         }
 
         setUpRecyclerView();
@@ -58,12 +58,15 @@ public class TaskListActivity extends AppCompatActivity {
         adapter = new TaskAdapter(tasksList);
 
         recyclerView = findViewById(R.id.tasks);
-
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
-
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.task_list_menu, menu);
+        return true;
+    }
 }

@@ -35,6 +35,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
         holder.mShortName.setText(mTaskList.get(position).getShortName());
         holder.mDone.setChecked(mTaskList.get(position).isDone());
+
+        holder.mDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mTaskList.get(position).setDone(holder.mDone.isChecked());
+            }
+        });
     }
 
     @Override
