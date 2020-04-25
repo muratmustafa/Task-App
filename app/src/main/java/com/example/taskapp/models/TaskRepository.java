@@ -1,6 +1,5 @@
-package com.example.taskapp.model;
+package com.example.taskapp.models;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface TaskRepository {

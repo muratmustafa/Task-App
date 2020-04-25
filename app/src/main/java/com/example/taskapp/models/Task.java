@@ -1,4 +1,4 @@
-package com.example.taskapp.model;
+package com.example.taskapp.models;
 
 import android.annotation.SuppressLint;
 import android.os.Parcel;

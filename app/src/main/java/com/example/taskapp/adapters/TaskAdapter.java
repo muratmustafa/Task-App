@@ -1,4 +1,4 @@
-package com.example.taskapp.adapter;
+package com.example.taskapp.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.taskapp.R;
-import com.example.taskapp.model.Task;
+import com.example.taskapp.models.Task;
 
 import java.util.List;
 

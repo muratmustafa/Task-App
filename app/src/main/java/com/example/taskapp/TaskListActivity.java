@@ -15,10 +15,9 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.taskapp.adapter.TaskAdapter;
-import com.example.taskapp.model.Task;
-import com.example.taskapp.model.inmemory.TaskRepositoryInMemoryImpl;
-import com.google.android.material.snackbar.Snackbar;
+import com.example.taskapp.adapters.TaskAdapter;
+import com.example.taskapp.models.Task;
+import com.example.taskapp.models.inmemory.TaskRepositoryInMemoryImpl;
 
 import java.util.ArrayList;
 

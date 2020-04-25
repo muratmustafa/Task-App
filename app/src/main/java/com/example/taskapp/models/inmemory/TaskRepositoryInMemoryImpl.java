@@ -1,7 +1,7 @@
-package com.example.taskapp.model.inmemory;
+package com.example.taskapp.models.inmemory;
 
-import com.example.taskapp.model.Task;
-import com.example.taskapp.model.TaskRepository;
+import com.example.taskapp.models.Task;
+import com.example.taskapp.models.TaskRepository;
 
 import java.util.ArrayList;
 
@@ -54,7 +54,6 @@ public class TaskRepositoryInMemoryImpl implements TaskRepository {
                 i--;
             }
         }
-
         mAllTasks.clear();
         mAllTasks.addAll(mTasks);
     }
@@ -62,7 +61,7 @@ public class TaskRepositoryInMemoryImpl implements TaskRepository {
     @Override
     public void showUnfinishedTasks() {
 
-        ArrayList<Task> unfinishedTasks = new ArrayList<Task>();
+        ArrayList<Task> unfinishedTasks = new ArrayList<>();
 
         for (int i = 0; i < mTasks.size(); i++) {
             Task task = mTasks.get(i);
