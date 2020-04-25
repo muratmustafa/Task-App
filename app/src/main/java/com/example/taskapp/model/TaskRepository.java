@@ -1,5 +1,6 @@
 package com.example.taskapp.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface TaskRepository {
@@ -8,9 +9,9 @@ public interface TaskRepository {
 
     void deleteFinishedTasks();
 
-    void addTask(String shortName);
+    void showUnfinishedTasks();
 
-    void updateTask(long id);
+    void showAllTasks();
 
     // TODO: add methods for adding new or updating existing tasks
 }

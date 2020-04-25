@@ -10,6 +10,7 @@ public class TaskRepositoryInMemoryImpl implements TaskRepository {
     private static TaskRepositoryInMemoryImpl instance;
 
     private ArrayList<Task> mTasks;
+    private ArrayList<Task> mAllTasks;
 
     public static synchronized TaskRepositoryInMemoryImpl getInstance() {
         if (instance == null) {
@@ -18,9 +19,9 @@ public class TaskRepositoryInMemoryImpl implements TaskRepository {
         return instance;
     }
 
-
     private TaskRepositoryInMemoryImpl() {
         mTasks = new ArrayList<>();
+        mAllTasks = new ArrayList<>();
 
         Task myTask = new Task("Empty the trash");
         myTask.setDescription("Someone has to get the dirty jobs done...");
@@ -33,8 +34,10 @@ public class TaskRepositoryInMemoryImpl implements TaskRepository {
         myTask.setDone(true);
         mTasks.add(myTask);
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 1; i < 4; i++)
           mTasks.add(new Task("Task - " + i));
+
+        mAllTasks.addAll(mTasks);
     }
 
     @Override
@@ -51,15 +54,30 @@ public class TaskRepositoryInMemoryImpl implements TaskRepository {
                 i--;
             }
         }
+
+        mAllTasks.clear();
+        mAllTasks.addAll(mTasks);
     }
 
     @Override
-    public void addTask(String shortName) {
+    public void showUnfinishedTasks() {
 
+        ArrayList<Task> unfinishedTasks = new ArrayList<Task>();
+
+        for (int i = 0; i < mTasks.size(); i++) {
+            Task task = mTasks.get(i);
+            if (!task.isDone()) {
+                unfinishedTasks.add(task);
+            }
+        }
+
+        mTasks.clear();
+        mTasks.addAll(unfinishedTasks);
     }
 
     @Override
-    public void updateTask(long id){
-
+    public void showAllTasks() {
+        mTasks.clear();
+        mTasks.addAll(mAllTasks);
     }
 }
