@@ -49,14 +49,12 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         return mTaskList.size();
     }
 
-    class TaskViewHolder extends RecyclerView.ViewHolder{
-
+    static class TaskViewHolder extends RecyclerView.ViewHolder{
         CheckBox mDone;
         TextView mShortName;
 
-        public TaskViewHolder(View itemView){
+        TaskViewHolder(View itemView){
             super(itemView);
-
             mDone = itemView.findViewById(R.id.done);
             mShortName = itemView.findViewById(R.id.shortName);
         }

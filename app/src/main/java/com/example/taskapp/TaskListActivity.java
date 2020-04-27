@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.taskapp.adapters.TaskAdapter;
 import com.example.taskapp.models.Task;
 import com.example.taskapp.models.TasksLoader;
+import com.example.taskapp.models.TasksRepository;
 import com.example.taskapp.models.inmemory.TasksRepositoryInMemoryImpl;
 
 import java.util.ArrayList;
@@ -29,16 +30,14 @@ public class TaskListActivity extends AppCompatActivity implements LoaderManager
 
     private ArrayList<Task> mTasksList;
     private TaskAdapter mAdapter;
-    private TasksRepositoryInMemoryImpl mRepository;
-
-    private static final String TASKS = "TASK_OBJECTS";
+    private TasksRepository mRepository;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_list);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         mRepository = TasksRepositoryInMemoryImpl.getInstance();
@@ -96,29 +95,22 @@ public class TaskListActivity extends AppCompatActivity implements LoaderManager
     @NonNull
     @Override
     public Loader<List<Task>> onCreateLoader(int id, @Nullable Bundle args) {
-
-        Log.d("loader", "onCreateLoader");
-
         return new TasksLoader(this, mRepository);
     }
 
     @Override
     public void onLoadFinished(@NonNull Loader<List<Task>> loader, List<Task> data) {
-
-        Log.d("loader", "onLoadFinished");
-
-        mTasksList.clear();
-        mTasksList.addAll(data);
-        mAdapter.notifyDataSetChanged();
+        setData(data);
     }
 
     @Override
     public void onLoaderReset(@NonNull Loader<List<Task>> loader) {
+        setData(new ArrayList<Task>());
+    }
 
-        Log.d("loader", "onLoaderReset");
-
+    public void setData(List<Task> data){
         mTasksList.clear();
-        mTasksList.addAll(new ArrayList<Task>());
+        mTasksList.addAll(data);
         mAdapter.notifyDataSetChanged();
     }
 }
