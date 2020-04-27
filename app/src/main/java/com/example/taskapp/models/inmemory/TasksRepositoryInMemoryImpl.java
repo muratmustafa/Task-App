@@ -1,25 +1,26 @@
 package com.example.taskapp.models.inmemory;
 
 import com.example.taskapp.models.Task;
-import com.example.taskapp.models.TaskRepository;
+import com.example.taskapp.models.TasksRepository;
 
 import java.util.ArrayList;
 
-public class TaskRepositoryInMemoryImpl implements TaskRepository {
+public class TasksRepositoryInMemoryImpl implements TasksRepository {
 
-    private static TaskRepositoryInMemoryImpl instance;
+    private static TasksRepositoryInMemoryImpl instance;
 
     private ArrayList<Task> mTasks;
     private ArrayList<Task> mAllTasks;
+    private DataObserver mDataObserver;
 
-    public static synchronized TaskRepositoryInMemoryImpl getInstance() {
+    public static synchronized TasksRepositoryInMemoryImpl getInstance() {
         if (instance == null) {
-            instance = new TaskRepositoryInMemoryImpl();
+            instance = new TasksRepositoryInMemoryImpl();
         }
         return instance;
     }
 
-    private TaskRepositoryInMemoryImpl() {
+    private TasksRepositoryInMemoryImpl() {
         mTasks = new ArrayList<>();
         mAllTasks = new ArrayList<>();
 
@@ -51,6 +52,9 @@ public class TaskRepositoryInMemoryImpl implements TaskRepository {
             Task task = mTasks.get(i);
             if (task.isDone()) {
                 mTasks.remove(task);
+                if (mDataObserver != null) {
+                    mDataObserver.onDataChanged();
+                }
                 i--;
             }
         }
@@ -72,11 +76,22 @@ public class TaskRepositoryInMemoryImpl implements TaskRepository {
 
         mTasks.clear();
         mTasks.addAll(unfinishedTasks);
+        if (mDataObserver != null) {
+            mDataObserver.onDataChanged();
+        }
     }
 
     @Override
     public void showAllTasks() {
         mTasks.clear();
         mTasks.addAll(mAllTasks);
+        if (mDataObserver != null) {
+            mDataObserver.onDataChanged();
+        }
+    }
+
+    @Override
+    public void setDataObserver(DataObserver observer) {
+        mDataObserver = observer;
     }
 }
