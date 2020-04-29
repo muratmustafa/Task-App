@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,6 +23,7 @@ import com.example.taskapp.models.Task;
 import com.example.taskapp.models.TasksLoader;
 import com.example.taskapp.models.TasksRepository;
 import com.example.taskapp.models.inmemory.TasksRepositoryInMemoryImpl;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +48,14 @@ public class TaskListActivity extends AppCompatActivity implements LoaderManager
         lm.initLoader(0, null, this);
 
         mTasksList = new ArrayList<Task>();
+
+        FloatingActionButton addTask = findViewById(R.id.add_task);
+        addTask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TaskDetailActivity.startActivity(TaskListActivity.this);
+            }
+        });
 
         setUpRecyclerView();
     }

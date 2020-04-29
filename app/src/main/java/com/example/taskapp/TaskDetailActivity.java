@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -24,6 +26,10 @@ public class TaskDetailActivity extends AppCompatActivity {
     private EditText mShortName, mDescription;
     private Task mTask;
     private static final String TASK = "TASK_OBJECT";
+
+    public static void startActivity(Context context) {
+        context.startActivity(new Intent(context, TaskDetailActivity.class));
+    }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
@@ -54,10 +60,9 @@ public class TaskDetailActivity extends AppCompatActivity {
         TextView date = findViewById(R.id.date);
         date.setText(currentDate);
 
-        FloatingActionButton save = findViewById(R.id.save);
-
         mDone = findViewById(R.id.done);
 
+        FloatingActionButton save = findViewById(R.id.save);
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
