@@ -1,8 +1,11 @@
 package com.example.taskapp;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.Loader;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,22 +16,43 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.taskapp.adapters.TaskAdapter;
 import com.example.taskapp.models.Task;
+import com.example.taskapp.models.TasksLoader;
+import com.example.taskapp.models.TasksRepository;
+import com.example.taskapp.models.inmemory.TasksRepositoryInMemoryImpl;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Objects;
 
-public class TaskDetailActivity extends AppCompatActivity {
+import es.dmoral.toasty.Toasty;
+
+public class TaskDetailActivity extends AppCompatActivity{
+
+    private static final String TASK = "TASK_OBJECT";
+    private static final String EXTRA_TASK_ID = "EXTRA_TASK_ID";
+
+    private int flag = 0;
 
     private CheckBox mDone;
     private EditText mShortName, mDescription;
-    private Task mTask;
-    private static final String TASK = "TASK_OBJECT";
+    private TextView mCreationDate;
 
-    public static void startActivity(Context context) {
-        context.startActivity(new Intent(context, TaskDetailActivity.class));
+    private Task mTask;
+    private ArrayList<Task> mTasksList;
+    private TasksRepository mRepository;
+
+    public static void startActivity(Context context, int taskID) {
+
+        Intent intent = new Intent(context, TaskDetailActivity.class);
+        intent.putExtra(EXTRA_TASK_ID, taskID);
+
+        context.startActivity(intent);
     }
 
     @Override
@@ -57,13 +81,19 @@ public class TaskDetailActivity extends AppCompatActivity {
 
         Calendar calendar = Calendar.getInstance();
         String currentDate = DateFormat.getDateInstance().format(calendar.getTime());
-        TextView date = findViewById(R.id.date);
-        date.setText(currentDate);
 
+        mRepository = TasksRepositoryInMemoryImpl.getInstance();
+        mTasksList = new ArrayList<Task>(mRepository.loadTasks());
+
+        mShortName = findViewById(R.id.shortName);
+        mDescription = findViewById(R.id.description);
+        mCreationDate = findViewById(R.id.date);
         mDone = findViewById(R.id.done);
 
-        FloatingActionButton save = findViewById(R.id.save);
-        save.setOnClickListener(new View.OnClickListener() {
+        mCreationDate.setText(currentDate);
+
+        FloatingActionButton saveFAB = findViewById(R.id.save);
+        saveFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 saveTask();
@@ -71,13 +101,39 @@ public class TaskDetailActivity extends AppCompatActivity {
         });
     }
 
-    public void saveTask(){
-        mShortName = findViewById(R.id.shortName);
-        mDescription = findViewById(R.id.description);
+    @Override
+    protected void onStart() {
+        super.onStart();
 
-        mTask = new Task(mShortName.getText().toString());
-        mTask.setDescription(mDescription.getText().toString());
-        mTask.setDone(mDone.isChecked());
+        Intent intent = getIntent();
+        int taskID = intent.getIntExtra(EXTRA_TASK_ID, -1);
+
+        if (taskID != -1){
+
+            mTask = mTasksList.get(taskID);
+
+            mShortName.setText(mTask.getShortName());
+            mDescription.setText(mTask.getDescription());
+            mDone.setChecked(mTask.isDone());
+            mCreationDate.setText(DateFormat.getDateInstance().format(mTask.getCreationDate()));
+
+            flag = 1;
+        }
+    }
+
+    public void saveTask(){
+
+        if (flag == 1){
+            mRepository.updateTask(mTask.getId(), mShortName.getText().toString(), mDescription.getText().toString(), mDone.isChecked());
+            onBackPressed();
+        }else{
+            Task task = new Task(mShortName.getText().toString());
+            task.setDescription(mDescription.getText().toString());
+            task.setDone(mDone.isChecked());
+            mRepository.addNewTask(task);
+            onBackPressed();
+        }
+
     }
 
     @Override

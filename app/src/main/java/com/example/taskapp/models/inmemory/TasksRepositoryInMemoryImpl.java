@@ -24,7 +24,7 @@ public class TasksRepositoryInMemoryImpl implements TasksRepository {
         mTasks = new ArrayList<>();
         mAllTasks = new ArrayList<>();
 
-        Task myTask = new Task("Empty the trash");
+        /*Task myTask = new Task("Empty the trash");
         myTask.setDescription("Someone has to get the dirty jobs done...");
         myTask.setDone(true);
         mTasks.add(myTask);
@@ -33,9 +33,9 @@ public class TasksRepositoryInMemoryImpl implements TasksRepository {
         myTask = new Task("Do Android programming");
         myTask.setDescription("Nobody said it would be easy!");
         myTask.setDone(true);
-        mTasks.add(myTask);
+        mTasks.add(myTask);*/
 
-        for (int i = 1; i < 40; i++)
+        for (int i = 1; i < 6; i++)
           mTasks.add(new Task("Task - " + i));
 
         mAllTasks.addAll(mTasks);
@@ -86,6 +86,27 @@ public class TasksRepositoryInMemoryImpl implements TasksRepository {
         mTasks.clear();
         mTasks.addAll(mAllTasks);
         if (mDataObserver != null) {
+            mDataObserver.onDataChanged();
+        }
+    }
+
+    @Override
+    public void addNewTask(Task task) {
+        mTasks.add(task);
+        if (mDataObserver != null) {
+            mDataObserver.onDataChanged();
+        }
+    }
+
+    @Override
+    public void updateTask(int id, String shortName, String description, boolean done) {
+        mTasks.get(id)
+                .setShortName(shortName);
+        mTasks.get(id)
+                .setDescription(description);
+        mTasks.get(id)
+                .setDone(done);
+        if (mDataObserver != null){
             mDataObserver.onDataChanged();
         }
     }

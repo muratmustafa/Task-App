@@ -53,7 +53,7 @@ public class TaskListActivity extends AppCompatActivity implements LoaderManager
         addTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TaskDetailActivity.startActivity(TaskListActivity.this);
+                TaskDetailActivity.startActivity(TaskListActivity.this, -1);
             }
         });
 

@@ -16,6 +16,10 @@ public interface TasksRepository {
 
     void showAllTasks();
 
+    void addNewTask(Task task);
+
+    void updateTask(int id, String shortName, String description, boolean done);
+
     void setDataObserver(DataObserver observer);
 
     // TODO: add methods for adding new or updating existing tasks
