@@ -93,6 +93,7 @@ public class TasksRepositoryInMemoryImpl implements TasksRepository {
     @Override
     public void addNewTask(Task task) {
         mTasks.add(task);
+        mAllTasks.add(task);
         if (mDataObserver != null) {
             mDataObserver.onDataChanged();
         }

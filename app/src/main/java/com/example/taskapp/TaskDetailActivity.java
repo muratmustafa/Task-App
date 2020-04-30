@@ -35,7 +35,7 @@ import es.dmoral.toasty.Toasty;
 public class TaskDetailActivity extends AppCompatActivity{
 
     private static final String TASK = "TASK_OBJECT";
-    private static final String EXTRA_TASK_ID = "EXTRA_TASK_ID";
+    private static final String EXTRA_TASK_POSITION = "EXTRA_TASK_POSITION";
 
     private int flag = 0;
 
@@ -47,10 +47,10 @@ public class TaskDetailActivity extends AppCompatActivity{
     private ArrayList<Task> mTasksList;
     private TasksRepository mRepository;
 
-    public static void startActivity(Context context, int taskID) {
+    public static void startActivity(Context context, int taskPosition) {
 
         Intent intent = new Intent(context, TaskDetailActivity.class);
-        intent.putExtra(EXTRA_TASK_ID, taskID);
+        intent.putExtra(EXTRA_TASK_POSITION, taskPosition);
 
         context.startActivity(intent);
     }
@@ -106,11 +106,11 @@ public class TaskDetailActivity extends AppCompatActivity{
         super.onStart();
 
         Intent intent = getIntent();
-        int taskID = intent.getIntExtra(EXTRA_TASK_ID, -1);
+        int taskPosition = intent.getIntExtra(EXTRA_TASK_POSITION, -1);
 
-        if (taskID != -1){
+        if (taskPosition != -1){
 
-            mTask = mTasksList.get(taskID);
+            mTask = mTasksList.get(taskPosition);
 
             mShortName.setText(mTask.getShortName());
             mDescription.setText(mTask.getDescription());

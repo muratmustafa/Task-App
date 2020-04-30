@@ -61,7 +61,6 @@ public class TaskListActivity extends AppCompatActivity implements LoaderManager
     }
 
     private void setUpRecyclerView() {
-
         mAdapter = new TaskAdapter(mTasksList);
 
         RecyclerView recyclerView = findViewById(R.id.tasks);
