@@ -35,7 +35,7 @@ public class TasksRepositoryInMemoryImpl implements TasksRepository {
         myTask.setDone(true);
         mTasks.add(myTask);*/
 
-        for (int i = 1; i < 6; i++)
+        for (int i = 1; i < 15; i++)
           mTasks.add(new Task("Task - " + i));
 
         mAllTasks.addAll(mTasks);

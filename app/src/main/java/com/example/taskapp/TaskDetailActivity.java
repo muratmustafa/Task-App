@@ -1,36 +1,27 @@
 package com.example.taskapp;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.Loader;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.example.taskapp.adapters.TaskAdapter;
 import com.example.taskapp.models.Task;
-import com.example.taskapp.models.TasksLoader;
 import com.example.taskapp.models.TasksRepository;
 import com.example.taskapp.models.inmemory.TasksRepositoryInMemoryImpl;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Objects;
-
-import es.dmoral.toasty.Toasty;
 
 public class TaskDetailActivity extends AppCompatActivity{
 
@@ -64,7 +55,7 @@ public class TaskDetailActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_task_detail);
+        setContentView(R.layout.detail);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -85,14 +76,14 @@ public class TaskDetailActivity extends AppCompatActivity{
         mRepository = TasksRepositoryInMemoryImpl.getInstance();
         mTasksList = new ArrayList<Task>(mRepository.loadTasks());
 
-        mShortName = findViewById(R.id.shortName);
-        mDescription = findViewById(R.id.description);
-        mCreationDate = findViewById(R.id.date);
-        mDone = findViewById(R.id.done);
+        mShortName = findViewById(R.id.shortNameEditText);
+        mDescription = findViewById(R.id.descriptionEditText);
+        mCreationDate = findViewById(R.id.dateTextView);
+        mDone = findViewById(R.id.doneCheckBox);
 
         mCreationDate.setText(currentDate);
 
-        FloatingActionButton saveFAB = findViewById(R.id.save);
+        Button saveFAB = findViewById(R.id.addNewTask);
         saveFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

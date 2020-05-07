@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -53,7 +54,7 @@ public class TaskListActivity extends AppCompatActivity implements LoaderManager
 
         mTasksList = new ArrayList<Task>();
 
-        FloatingActionButton addTask = findViewById(R.id.add_task);
+        Button addTask = findViewById(R.id.addNewTask);
         addTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

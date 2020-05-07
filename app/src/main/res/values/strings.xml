@@ -1,5 +1,12 @@
 <resources>
     <string name="app_name">Simple Task App</string>
+    <string name="task">Task</string>
+    <string name="description">Description</string>
+    <string name="date">Creation Date</string>
+    <string name="done">Done</string>
+    <string name="hintShortName">Enter short name here.</string>
+    <string name="hintDescription">Enter description here.</string>
+    <string name="taskDetailActivityToolbarTittle">Edit Task Details</string>
     <string name="menu_item_1">Show all tasks</string>
     <string name="menu_item_2">Show unfinished tasks</string>
     <string name="menu_item_3">Delete finished tasks</string>
