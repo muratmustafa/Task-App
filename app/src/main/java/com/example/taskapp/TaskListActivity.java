@@ -1,10 +1,12 @@
 package com.example.taskapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
@@ -27,6 +29,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import es.dmoral.toasty.Toasty;
 
 public class TaskListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Task>> {
 
@@ -53,7 +57,14 @@ public class TaskListActivity extends AppCompatActivity implements LoaderManager
         addTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TaskDetailActivity.startActivity(TaskListActivity.this, -1);
+                Intent sendIntent = new Intent(Intent.ACTION_SEND);
+                sendIntent.putExtra(TaskDetailActivity.EXTRA_TASK_POSITION, "-1");
+                sendIntent.setType("text/plain");
+
+                if (sendIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(sendIntent);
+                }
+
             }
         });
 

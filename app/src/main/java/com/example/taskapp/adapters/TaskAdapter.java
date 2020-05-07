@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.taskapp.R;
 import com.example.taskapp.TaskDetailActivity;
+import com.example.taskapp.TaskListActivity;
 import com.example.taskapp.models.Task;
 
 import java.util.List;
@@ -50,7 +51,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TaskDetailActivity.startActivity(holder.context, position);
+                //TaskDetailActivity.startActivity(holder.context, position);
+
+                Intent sendIntent = new Intent(Intent.ACTION_SEND);
+                sendIntent.putExtra(TaskDetailActivity.EXTRA_TASK_POSITION, String.valueOf(position));
+                sendIntent.setType("text/plain");
+
+                holder.context.startActivity(sendIntent);
             }
         });
     }

@@ -35,7 +35,7 @@ import es.dmoral.toasty.Toasty;
 public class TaskDetailActivity extends AppCompatActivity{
 
     private static final String TASK = "TASK_OBJECT";
-    private static final String EXTRA_TASK_POSITION = "EXTRA_TASK_POSITION";
+    public static final String EXTRA_TASK_POSITION = "EXTRA_TASK_POSITION";
 
     private int flag = 0;
 
@@ -106,7 +106,8 @@ public class TaskDetailActivity extends AppCompatActivity{
         super.onStart();
 
         Intent intent = getIntent();
-        int taskPosition = intent.getIntExtra(EXTRA_TASK_POSITION, -1);
+
+        int taskPosition = Integer.parseInt(Objects.requireNonNull(intent.getStringExtra(EXTRA_TASK_POSITION)));
 
         if (taskPosition != -1){
 
