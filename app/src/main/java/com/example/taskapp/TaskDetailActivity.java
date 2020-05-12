@@ -38,6 +38,8 @@ public class TaskDetailActivity extends AppCompatActivity{
     private ArrayList<Task> mTasksList;
     private TasksRepository mRepository;
 
+    int mTaskPosition;
+
     public static void startActivity(Context context, int taskPosition) {
 
         Intent intent = new Intent(context, TaskDetailActivity.class);
@@ -55,7 +57,7 @@ public class TaskDetailActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.detail);
+        setContentView(R.layout.activity_task_detail);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -83,8 +85,8 @@ public class TaskDetailActivity extends AppCompatActivity{
 
         mCreationDate.setText(currentDate);
 
-        Button saveFAB = findViewById(R.id.addNewTask);
-        saveFAB.setOnClickListener(new View.OnClickListener() {
+        Button saveButton = findViewById(R.id.addNewTask);
+        saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 saveTask();
@@ -98,11 +100,11 @@ public class TaskDetailActivity extends AppCompatActivity{
 
         Intent intent = getIntent();
 
-        int taskPosition = Integer.parseInt(Objects.requireNonNull(intent.getStringExtra(EXTRA_TASK_POSITION)));
+        mTaskPosition = Integer.parseInt(Objects.requireNonNull(intent.getStringExtra(EXTRA_TASK_POSITION)));
 
-        if (taskPosition != -1){
+        if (mTaskPosition != -1){
 
-            mTask = mTasksList.get(taskPosition);
+            mTask = mTasksList.get(mTaskPosition);
 
             mShortName.setText(mTask.getShortName());
             mDescription.setText(mTask.getDescription());
@@ -116,13 +118,10 @@ public class TaskDetailActivity extends AppCompatActivity{
     public void saveTask(){
 
         if (flag == 1){
-            mRepository.updateTask(mTask.getId(), mShortName.getText().toString(), mDescription.getText().toString(), mDone.isChecked());
+            mRepository.updateTask(mTaskPosition, mShortName.getText().toString(), mDescription.getText().toString(), mDone.isChecked());
             onBackPressed();
         }else{
-            Task task = new Task(mShortName.getText().toString());
-            task.setDescription(mDescription.getText().toString());
-            task.setDone(mDone.isChecked());
-            mRepository.addNewTask(task);
+            mRepository.addNewTask(mShortName.getText().toString(), mDescription.getText().toString(), mDone.isChecked());
             onBackPressed();
         }
 

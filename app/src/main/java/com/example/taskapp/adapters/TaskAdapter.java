@@ -2,6 +2,7 @@ package com.example.taskapp.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,8 +52,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TaskDetailActivity.startActivity(holder.context, position);
-
                 Intent sendIntent = new Intent(Intent.ACTION_SEND);
                 sendIntent.putExtra(TaskDetailActivity.EXTRA_TASK_POSITION, String.valueOf(position));
                 sendIntent.setType("text/plain");

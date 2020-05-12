@@ -18,6 +18,8 @@ public interface TasksRepository {
 
     void addNewTask(Task task);
 
+    void addNewTask(String shortName, String description, boolean done);
+
     void updateTask(int id, String shortName, String description, boolean done);
 
     void setDataObserver(DataObserver observer);
