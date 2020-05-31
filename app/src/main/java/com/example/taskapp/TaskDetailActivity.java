@@ -4,10 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -16,7 +14,7 @@ import android.widget.TextView;
 
 import com.example.taskapp.models.Task;
 import com.example.taskapp.models.TasksRepository;
-import com.example.taskapp.models.inmemory.TasksRepositoryInMemoryImpl;
+import com.example.taskapp.models.db.TasksDbRepositoryImpl;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -25,10 +23,14 @@ import java.util.Objects;
 
 public class TaskDetailActivity extends AppCompatActivity{
 
+    public static final String EXTRA_TASK_ID = "EXTRA_TASK_POSITION";
+    public static final String INTENT_EDIT_ACTION = "com.example.taskapp.ACTION_EDIT";
+    public static final String INTENT_ADD_ACTION = "com.example.taskapp.ACTION_ADD";
+
     private static final String TASK = "TASK_OBJECT";
-    public static final String EXTRA_TASK_POSITION = "EXTRA_TASK_POSITION";
 
     private int flag = 0;
+    private long mTaskID;
 
     private CheckBox mDone;
     private EditText mShortName, mDescription;
@@ -37,16 +39,6 @@ public class TaskDetailActivity extends AppCompatActivity{
     private Task mTask;
     private ArrayList<Task> mTasksList;
     private TasksRepository mRepository;
-
-    int mTaskPosition;
-
-    public static void startActivity(Context context, int taskPosition) {
-
-        Intent intent = new Intent(context, TaskDetailActivity.class);
-        intent.putExtra(EXTRA_TASK_POSITION, taskPosition);
-
-        context.startActivity(intent);
-    }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
@@ -59,7 +51,7 @@ public class TaskDetailActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_detail);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
@@ -67,23 +59,16 @@ public class TaskDetailActivity extends AppCompatActivity{
 
         if (savedInstanceState != null){
             mTask = savedInstanceState.getParcelable(TASK);
-            Log.d("savedInstanceState", "not null");
-        }else{
-            Log.d("savedInstanceState", "null");
         }
 
-        Calendar calendar = Calendar.getInstance();
-        String currentDate = DateFormat.getDateInstance().format(calendar.getTime());
+        mRepository = TasksDbRepositoryImpl.getInstance(this);
 
-        mRepository = TasksRepositoryInMemoryImpl.getInstance();
         mTasksList = new ArrayList<Task>(mRepository.loadTasks());
 
         mShortName = findViewById(R.id.shortNameEditText);
         mDescription = findViewById(R.id.descriptionEditText);
         mCreationDate = findViewById(R.id.dateTextView);
         mDone = findViewById(R.id.doneCheckBox);
-
-        mCreationDate.setText(currentDate);
 
         Button saveButton = findViewById(R.id.addNewTask);
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -98,13 +83,12 @@ public class TaskDetailActivity extends AppCompatActivity{
     protected void onStart() {
         super.onStart();
 
-        Intent intent = getIntent();
+        Intent outIntent = getIntent();
 
-        mTaskPosition = Integer.parseInt(Objects.requireNonNull(intent.getStringExtra(EXTRA_TASK_POSITION)));
+        if (Objects.equals(outIntent.getAction(), INTENT_EDIT_ACTION)){
+            mTaskID = Integer.parseInt(Objects.requireNonNull(outIntent.getStringExtra(EXTRA_TASK_ID)));
 
-        if (mTaskPosition != -1){
-
-            mTask = mTasksList.get(mTaskPosition);
+            mTask = mTasksList.get(((int) mTaskID ) - 1);
 
             mShortName.setText(mTask.getShortName());
             mDescription.setText(mTask.getDescription());
@@ -112,19 +96,22 @@ public class TaskDetailActivity extends AppCompatActivity{
             mCreationDate.setText(DateFormat.getDateInstance().format(mTask.getCreationDate()));
 
             flag = 1;
+
+        }else if(Objects.equals(outIntent.getAction(), INTENT_ADD_ACTION)){
+            Calendar calendar = Calendar.getInstance();
+            String currentDate = DateFormat.getDateInstance().format(calendar.getTime());
+            mCreationDate.setText(currentDate);
         }
     }
 
     public void saveTask(){
-
         if (flag == 1){
-            mRepository.updateTask(mTaskPosition, mShortName.getText().toString(), mDescription.getText().toString(), mDone.isChecked());
+            mRepository.updateTask(mTaskID, mShortName.getText().toString(), mDescription.getText().toString(), mDone.isChecked());
             onBackPressed();
         }else{
-            mRepository.addNewTask(mShortName.getText().toString(), mDescription.getText().toString(), mDone.isChecked());
+            mRepository.addNewTask(mShortName.getText().toString(), mDescription.getText().toString(), mDone.isChecked(), mCreationDate.toString());
             onBackPressed();
         }
-
     }
 
     @Override

@@ -2,27 +2,28 @@ package com.example.taskapp.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.taskapp.R;
 import com.example.taskapp.TaskDetailActivity;
-import com.example.taskapp.TaskListActivity;
 import com.example.taskapp.models.Task;
+import com.example.taskapp.models.TasksRepository;
+import com.example.taskapp.models.db.TasksDbRepositoryImpl;
 
 import java.util.List;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder>{
 
     private final List<Task> mTaskList;
+
+    private TasksRepository mRepository;
 
     public TaskAdapter(List<Task> mTaskList) {
         this.mTaskList = mTaskList;
@@ -46,17 +47,21 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             @Override
             public void onClick(View v) {
                 mTaskList.get(position).setDone(holder.mDone.isChecked());
+
+                mRepository = TasksDbRepositoryImpl.getInstance(holder.context);
+
+                mRepository.updateDone(mTaskList.get(position).getId(), holder.mDone.isChecked());
+
             }
         });
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent sendIntent = new Intent(Intent.ACTION_SEND);
-                sendIntent.putExtra(TaskDetailActivity.EXTRA_TASK_POSITION, String.valueOf(position));
-                sendIntent.setType("text/plain");
 
-                holder.context.startActivity(sendIntent);
+                Intent inIntent = new Intent(TaskDetailActivity.INTENT_EDIT_ACTION);
+                inIntent.putExtra(TaskDetailActivity.EXTRA_TASK_ID, String.valueOf(mTaskList.get(position).getId()));
+                holder.context.startActivity(inIntent);
             }
         });
     }

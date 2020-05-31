@@ -10,25 +10,24 @@ import java.util.GregorianCalendar;
 @SuppressLint("ParcelCreator")
 public class Task implements Parcelable {
 
-    private static int MAX_ID = 0;
-
-    private int mId;
+    private long mId;
     private String mShortName;
     private String mDescription;
     private Date mCreationDate;
     private boolean mDone;
 
-    public Task(String shortName) {
-        this.mId = MAX_ID++;
+    public Task(long id, String shortName) {
+        this.mId = id;
         this.mShortName = shortName;
         this.mCreationDate = GregorianCalendar.getInstance().getTime();
     }
 
-    protected Task(Parcel in) {
+    private Task(Parcel in) {
         mId = in.readInt();
         mShortName = in.readString();
         mDescription = in.readString();
         mDone = in.readByte() != 0;
+        mCreationDate = new Date(in.readLong());
     }
 
     public static final Creator<Task> CREATOR = new Creator<Task>() {
@@ -43,7 +42,7 @@ public class Task implements Parcelable {
         }
     };
 
-    public int getId() {
+    public long getId() {
         return this.mId;
     }
 
@@ -95,9 +94,10 @@ public class Task implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(mId);
+        dest.writeLong(mId);
         dest.writeString(mShortName);
         dest.writeString(mDescription);
         dest.writeByte((byte) (mDone ? 1 : 0));
+        dest.writeLong(mCreationDate.getTime());
     }
 }

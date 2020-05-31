@@ -28,8 +28,7 @@ public class TasksLoader extends AsyncTaskLoader<List<Task>> implements TasksRep
     @Nullable
     @Override
     public List<Task> loadInBackground() {
-        List<Task> tasks = mRepository.loadTasks();
-        return tasks;
+        return mRepository.loadTasks();
     }
 
     @Override

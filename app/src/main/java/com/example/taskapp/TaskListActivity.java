@@ -25,13 +25,10 @@ import com.example.taskapp.adapters.TaskAdapter;
 import com.example.taskapp.models.Task;
 import com.example.taskapp.models.TasksLoader;
 import com.example.taskapp.models.TasksRepository;
-import com.example.taskapp.models.inmemory.TasksRepositoryInMemoryImpl;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.example.taskapp.models.db.TasksDbRepositoryImpl;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import es.dmoral.toasty.Toasty;
 
 public class TaskListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Task>> {
 
@@ -47,7 +44,9 @@ public class TaskListActivity extends AppCompatActivity implements LoaderManager
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mRepository = TasksRepositoryInMemoryImpl.getInstance();
+        //mRepository = TasksRepositoryInMemoryImpl.getInstance();
+
+        mRepository = TasksDbRepositoryImpl.getInstance(this);
 
         LoaderManager lm = LoaderManager.getInstance(this);
         lm.initLoader(0, null, this);
@@ -58,12 +57,10 @@ public class TaskListActivity extends AppCompatActivity implements LoaderManager
         addTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent sendIntent = new Intent(Intent.ACTION_SEND);
-                sendIntent.putExtra(TaskDetailActivity.EXTRA_TASK_POSITION, "-1");
-                sendIntent.setType("text/plain");
+                Intent inIntent = new Intent(TaskDetailActivity.INTENT_ADD_ACTION);
 
-                if (sendIntent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(sendIntent);
+                if (inIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(inIntent);
                 }
 
             }

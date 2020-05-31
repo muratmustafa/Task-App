@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -83,7 +84,7 @@
         android:hint="@string/hintShortName"
         android:importantForAutofill="no"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toBottomOf="@+id/shortNameTextView"
+        app:layout_constraintBaseline_toBaselineOf="@+id/shortNameTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline" />
 
@@ -97,7 +98,7 @@
         android:hint="@string/hintDescription"
         android:importantForAutofill="no"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toBottomOf="@+id/description"
+        app:layout_constraintBaseline_toBaselineOf="@+id/description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline" />
 
@@ -108,7 +109,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@+id/dateText"
+        app:layout_constraintBaseline_toBaselineOf="@+id/dateText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/dateText" />
 
@@ -119,7 +120,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:buttonTint="#2B2626"
-        app:layout_constraintBottom_toBottomOf="@+id/doneTextView"
+        app:layout_constraintBaseline_toBaselineOf="@+id/doneTextView"
         app:layout_constraintStart_toStartOf="@+id/guideline" />
 
     <Button
