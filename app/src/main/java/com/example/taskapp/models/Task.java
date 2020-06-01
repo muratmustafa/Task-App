@@ -19,7 +19,7 @@ public class Task implements Parcelable {
     public Task(long id, String shortName) {
         this.mId = id;
         this.mShortName = shortName;
-        this.mCreationDate = GregorianCalendar.getInstance().getTime();
+        //this.mCreationDate = GregorianCalendar.getInstance().getTime();
     }
 
     private Task(Parcel in) {
@@ -64,6 +64,10 @@ public class Task implements Parcelable {
 
     public Date getCreationDate() {
         return mCreationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.mCreationDate = creationDate;
     }
 
     public boolean isDone() {

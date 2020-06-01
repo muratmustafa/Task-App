@@ -23,14 +23,14 @@ import java.util.Objects;
 
 public class TaskDetailActivity extends AppCompatActivity{
 
-    public static final String EXTRA_TASK_ID = "EXTRA_TASK_POSITION";
+    public static final String EXTRA_TASK_POSITION = "EXTRA_TASK_POSITION";
     public static final String INTENT_EDIT_ACTION = "com.example.taskapp.ACTION_EDIT";
     public static final String INTENT_ADD_ACTION = "com.example.taskapp.ACTION_ADD";
 
     private static final String TASK = "TASK_OBJECT";
 
     private int flag = 0;
-    private long mTaskID;
+    private long mTaskPosition;
 
     private CheckBox mDone;
     private EditText mShortName, mDescription;
@@ -86,9 +86,9 @@ public class TaskDetailActivity extends AppCompatActivity{
         Intent outIntent = getIntent();
 
         if (Objects.equals(outIntent.getAction(), INTENT_EDIT_ACTION)){
-            mTaskID = Integer.parseInt(Objects.requireNonNull(outIntent.getStringExtra(EXTRA_TASK_ID)));
+            mTaskPosition = Integer.parseInt(Objects.requireNonNull(outIntent.getStringExtra(EXTRA_TASK_POSITION)));
 
-            mTask = mTasksList.get(((int) mTaskID ) - 1);
+            mTask = mTasksList.get(((int) mTaskPosition));
 
             mShortName.setText(mTask.getShortName());
             mDescription.setText(mTask.getDescription());
@@ -106,10 +106,10 @@ public class TaskDetailActivity extends AppCompatActivity{
 
     public void saveTask(){
         if (flag == 1){
-            mRepository.updateTask(mTaskID, mShortName.getText().toString(), mDescription.getText().toString(), mDone.isChecked());
+            mRepository.updateTask(mTaskPosition, mShortName.getText().toString(), mDescription.getText().toString(), mDone.isChecked());
             onBackPressed();
         }else{
-            mRepository.addNewTask(mShortName.getText().toString(), mDescription.getText().toString(), mDone.isChecked(), mCreationDate.toString());
+            mRepository.addNewTask(mShortName.getText().toString(), mDescription.getText().toString(), mDone.isChecked(), mCreationDate.getText().toString());
             onBackPressed();
         }
     }

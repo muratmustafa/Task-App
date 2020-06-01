@@ -1,5 +1,6 @@
 package com.example.taskapp.models.db;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -11,8 +12,13 @@ import androidx.annotation.NonNull;
 import com.example.taskapp.models.Task;
 import com.example.taskapp.models.TasksRepository;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static com.example.taskapp.models.db.TasksSQLiteOpenHelper.*;
 
@@ -24,7 +30,6 @@ public class TasksDbRepositoryImpl implements TasksRepository {
     private DataObserver mDataObserver;
 
     private ArrayList<Task> mTasks;
-    private ArrayList<Task> mAllTasks;
 
     public static TasksDbRepositoryImpl getInstance(@NonNull Context context){
         if (INSTANCE == null){
@@ -42,10 +47,9 @@ public class TasksDbRepositoryImpl implements TasksRepository {
                 DATABASE_VERSION);
 
         mTasks = new ArrayList<>();
-        mAllTasks = new ArrayList<>();
-
     }
 
+    @SuppressLint("SimpleDateFormat")
     @Override
     public List<Task> loadTasks() {
         mTasks.clear();
@@ -55,6 +59,7 @@ public class TasksDbRepositoryImpl implements TasksRepository {
         String[] projection = {KEY_ID,
                                KEY_SHORT_NAME,
                                KEY_DESCRIPTION,
+                               KEY_DATE,
                                KEY_DONE};
 
         String selection = KEY_HIDE + " = 1";
@@ -72,10 +77,20 @@ public class TasksDbRepositoryImpl implements TasksRepository {
                 long id = c.getInt(c.getColumnIndexOrThrow(KEY_ID));
                 String shortName = c.getString(c.getColumnIndexOrThrow(KEY_SHORT_NAME));
                 String description = c.getString(c.getColumnIndexOrThrow(KEY_DESCRIPTION));
+                String date = c.getString(c.getColumnIndexOrThrow(KEY_DATE));
                 boolean done = c.getInt(c.getColumnIndexOrThrow(KEY_DONE)) == 1;
+
+                DateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
+                Date d = new Date();
+                try {
+                    d = format.parse(date);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
 
                 Task task = new Task(id, shortName);
                 task.setDescription(description);
+                task.setCreationDate(d);
                 task.setDone(done);
                 mTasks.add(task);
             }
@@ -146,7 +161,7 @@ public class TasksDbRepositoryImpl implements TasksRepository {
     }
 
     @Override
-    public void updateTask(long id, String shortName, String description, boolean done) {
+    public void updateTask(long pos, String shortName, String description, boolean done) {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -154,17 +169,17 @@ public class TasksDbRepositoryImpl implements TasksRepository {
         values.put(KEY_DESCRIPTION, description);
         values.put(KEY_DONE, done);
 
-        db.update(DB_TASKS_TABLE, values, KEY_ID + " = ? ", new String[]{Long.toString(id)});
+        db.update(DB_TASKS_TABLE, values, KEY_ID + " = ? ", new String[]{Long.toString(pos)});
     }
 
     @Override
-    public void updateDone(long id, boolean done) {
+    public void updateDone(long pos, boolean done) {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(KEY_DONE, done);
 
-        db.update(DB_TASKS_TABLE, values, KEY_ID + " = ? ", new String[]{Long.toString(id)});
+        db.update(DB_TASKS_TABLE, values, KEY_ID + " = ? ", new String[]{Long.toString(pos)});
     }
 
     @Override
