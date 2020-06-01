@@ -88,7 +88,7 @@ public class TaskDetailActivity extends AppCompatActivity{
         if (Objects.equals(outIntent.getAction(), INTENT_EDIT_ACTION)){
             mTaskPosition = Integer.parseInt(Objects.requireNonNull(outIntent.getStringExtra(EXTRA_TASK_POSITION)));
 
-            mTask = mTasksList.get(((int) mTaskPosition));
+            mTask = mTasksList.get((int)mTaskPosition);
 
             mShortName.setText(mTask.getShortName());
             mDescription.setText(mTask.getDescription());

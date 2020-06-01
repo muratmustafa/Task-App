@@ -164,12 +164,14 @@ public class TasksDbRepositoryImpl implements TasksRepository {
     public void updateTask(long pos, String shortName, String description, boolean done) {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 
+        Log.d("taskupdate", pos + " " + shortName);
+
         ContentValues values = new ContentValues();
         values.put(KEY_SHORT_NAME, shortName);
         values.put(KEY_DESCRIPTION, description);
         values.put(KEY_DONE, done);
 
-        db.update(DB_TASKS_TABLE, values, KEY_ID + " = ? ", new String[]{Long.toString(pos)});
+        db.update(DB_TASKS_TABLE, values, KEY_ID + " = ?", new String[]{Long.toString(pos + 1)});
     }
 
     @Override
@@ -179,7 +181,7 @@ public class TasksDbRepositoryImpl implements TasksRepository {
         ContentValues values = new ContentValues();
         values.put(KEY_DONE, done);
 
-        db.update(DB_TASKS_TABLE, values, KEY_ID + " = ? ", new String[]{Long.toString(pos)});
+        db.update(DB_TASKS_TABLE, values, KEY_ID + " = ?", new String[]{Long.toString(pos)});
     }
 
     @Override
