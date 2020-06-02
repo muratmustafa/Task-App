@@ -10,6 +10,8 @@ public interface TasksRepository {
 
     List<Task> loadTasks();
 
+    Task getTask(long id);
+
     void deleteFinishedTasks();
 
     void showUnfinishedTasks();
@@ -18,9 +20,9 @@ public interface TasksRepository {
 
     void addNewTask(String shortName, String description, boolean done, String date);
 
-    void updateTask(long pos, String shortName, String description, boolean done);
+    void updateTask(long id, String shortName, String description, boolean done);
 
-    void updateDone(long pos, boolean done);
+    void updateDone(long id, boolean done);
 
     void setDataObserver(DataObserver observer);
 }

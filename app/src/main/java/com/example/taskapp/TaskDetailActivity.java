@@ -17,27 +17,25 @@ import com.example.taskapp.models.TasksRepository;
 import com.example.taskapp.models.db.TasksDbRepositoryImpl;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Objects;
 
 public class TaskDetailActivity extends AppCompatActivity{
 
-    public static final String EXTRA_TASK_POSITION = "EXTRA_TASK_POSITION";
+    public static final String EXTRA_TASK_ID = "EXTRA_TASK_ID";
     public static final String INTENT_EDIT_ACTION = "com.example.taskapp.ACTION_EDIT";
     public static final String INTENT_ADD_ACTION = "com.example.taskapp.ACTION_ADD";
 
     private static final String TASK = "TASK_OBJECT";
 
     private int flag = 0;
-    private long mTaskPosition;
+    private long mTaskID;
 
     private CheckBox mDone;
     private EditText mShortName, mDescription;
     private TextView mCreationDate;
 
     private Task mTask;
-    private ArrayList<Task> mTasksList;
     private TasksRepository mRepository;
 
     @Override
@@ -63,8 +61,6 @@ public class TaskDetailActivity extends AppCompatActivity{
 
         mRepository = TasksDbRepositoryImpl.getInstance(this);
 
-        mTasksList = new ArrayList<Task>(mRepository.loadTasks());
-
         mShortName = findViewById(R.id.shortNameEditText);
         mDescription = findViewById(R.id.descriptionEditText);
         mCreationDate = findViewById(R.id.dateTextView);
@@ -86,9 +82,9 @@ public class TaskDetailActivity extends AppCompatActivity{
         Intent outIntent = getIntent();
 
         if (Objects.equals(outIntent.getAction(), INTENT_EDIT_ACTION)){
-            mTaskPosition = Integer.parseInt(Objects.requireNonNull(outIntent.getStringExtra(EXTRA_TASK_POSITION)));
+            mTaskID = Integer.parseInt(Objects.requireNonNull(outIntent.getStringExtra(EXTRA_TASK_ID)));
 
-            mTask = mTasksList.get((int)mTaskPosition);
+            mTask = mRepository.getTask(mTaskID);
 
             mShortName.setText(mTask.getShortName());
             mDescription.setText(mTask.getDescription());
@@ -106,7 +102,7 @@ public class TaskDetailActivity extends AppCompatActivity{
 
     public void saveTask(){
         if (flag == 1){
-            mRepository.updateTask(mTaskPosition, mShortName.getText().toString(), mDescription.getText().toString(), mDone.isChecked());
+            mRepository.updateTask(mTaskID, mShortName.getText().toString(), mDescription.getText().toString(), mDone.isChecked());
             onBackPressed();
         }else{
             mRepository.addNewTask(mShortName.getText().toString(), mDescription.getText().toString(), mDone.isChecked(), mCreationDate.getText().toString());

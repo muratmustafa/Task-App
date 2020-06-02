@@ -56,21 +56,9 @@ public class TasksDbRepositoryImpl implements TasksRepository {
 
         SQLiteDatabase db = mOpenHelper.getReadableDatabase();
 
-        String[] projection = {KEY_ID,
-                               KEY_SHORT_NAME,
-                               KEY_DESCRIPTION,
-                               KEY_DATE,
-                               KEY_DONE};
-
         String selection = KEY_HIDE + " = 1";
 
-        Cursor c = db.query(DB_TASKS_TABLE,
-                projection,
-                selection,
-                null,
-                null,
-                null,
-                null);
+        @SuppressLint("Recycle") Cursor c = db.query(DB_TASKS_TABLE,null, selection, null, null, null, null);
 
         if (c != null && c.getCount() > 0){
             while(c.moveToNext()){
@@ -103,6 +91,40 @@ public class TasksDbRepositoryImpl implements TasksRepository {
     }
 
     @Override
+    public Task getTask(long id) {
+        Task task = null;
+
+        SQLiteDatabase db = mOpenHelper.getReadableDatabase();
+
+        String selection = KEY_ID + " = " + id;
+
+        @SuppressLint("Recycle") Cursor c = db.query(DB_TASKS_TABLE,null, selection, null, null, null, null);
+
+        if (c != null && c.getCount() > 0){
+            c.moveToFirst();
+            String shortName = c.getString(c.getColumnIndexOrThrow(KEY_SHORT_NAME));
+            String description = c.getString(c.getColumnIndexOrThrow(KEY_DESCRIPTION));
+            String date = c.getString(c.getColumnIndexOrThrow(KEY_DATE));
+            boolean done = c.getInt(c.getColumnIndexOrThrow(KEY_DONE)) == 1;
+
+            DateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
+            Date d = new Date();
+            try {
+                d = format.parse(date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            task = new Task(id, shortName);
+            task.setDescription(description);
+            task.setCreationDate(d);
+            task.setDone(done);
+        }
+
+        return task;
+    }
+
+    @Override
     public void deleteFinishedTasks() {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 
@@ -121,6 +143,7 @@ public class TasksDbRepositoryImpl implements TasksRepository {
         values.put(KEY_HIDE, 0);
 
         db.update(DB_TASKS_TABLE, values, KEY_DONE + " = 1", null);
+
 
         if (mDataObserver != null){
             mDataObserver.onDataChanged();
@@ -161,27 +184,31 @@ public class TasksDbRepositoryImpl implements TasksRepository {
     }
 
     @Override
-    public void updateTask(long pos, String shortName, String description, boolean done) {
+    public void updateTask(long id, String shortName, String description, boolean done) {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-
-        Log.d("taskupdate", pos + " " + shortName);
 
         ContentValues values = new ContentValues();
         values.put(KEY_SHORT_NAME, shortName);
         values.put(KEY_DESCRIPTION, description);
         values.put(KEY_DONE, done);
 
-        db.update(DB_TASKS_TABLE, values, KEY_ID + " = ?", new String[]{Long.toString(pos + 1)});
+        db.update(DB_TASKS_TABLE, values, KEY_ID + " = ?", new String[]{Long.toString(id)});
+
+        db.close();
+
+        if (mDataObserver != null){
+            mDataObserver.onDataChanged();
+        }
     }
 
     @Override
-    public void updateDone(long pos, boolean done) {
+    public void updateDone(long id, boolean done) {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(KEY_DONE, done);
 
-        db.update(DB_TASKS_TABLE, values, KEY_ID + " = ?", new String[]{Long.toString(pos)});
+        db.update(DB_TASKS_TABLE, values, KEY_ID + " = ?", new String[]{Long.toString(id)});
     }
 
     @Override

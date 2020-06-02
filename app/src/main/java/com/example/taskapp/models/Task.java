@@ -19,7 +19,6 @@ public class Task implements Parcelable {
     public Task(long id, String shortName) {
         this.mId = id;
         this.mShortName = shortName;
-        //this.mCreationDate = GregorianCalendar.getInstance().getTime();
     }
 
     private Task(Parcel in) {

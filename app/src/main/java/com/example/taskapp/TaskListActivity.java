@@ -44,8 +44,6 @@ public class TaskListActivity extends AppCompatActivity implements LoaderManager
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //mRepository = TasksRepositoryInMemoryImpl.getInstance();
-
         mRepository = TasksDbRepositoryImpl.getInstance(this);
 
         LoaderManager lm = LoaderManager.getInstance(this);
