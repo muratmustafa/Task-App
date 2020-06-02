@@ -11,5 +11,5 @@
     <string name="menu_item_2">Show unfinished tasks</string>
     <string name="menu_item_3">Delete finished tasks</string>
     <string name="save">Save</string>
-    <string name="add_new_task">Add New Task</string>
+    <string name="add_new_task">New Task</string>
 </resources>
