@@ -58,7 +58,7 @@ public class TasksDbRepositoryImpl implements TasksRepository {
 
         String selection = KEY_HIDE + " = 1";
 
-        @SuppressLint("Recycle") Cursor c = db.query(DB_TASKS_TABLE,null, selection, null, null, null, null);
+        @SuppressLint("Recycle") Cursor c = db.query(DB_TASKS_TABLE,null, selection, null, null, null, KEY_ID + " desc");
 
         if (c != null && c.getCount() > 0){
             while(c.moveToNext()){

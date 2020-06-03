@@ -67,9 +67,10 @@ public class TaskDetailActivity extends AppCompatActivity{
         if (Objects.equals(outIntent.getAction(), INTENT_EDIT_ACTION)){
             long mTaskID = Integer.parseInt(Objects.requireNonNull(outIntent.getStringExtra(EXTRA_TASK_ID)));
             mTask = mRepository.getTask(mTaskID);
+            assert taskDetailFragment != null;
             taskDetailFragment.setSelectedTask(mTask);
-
         }else if(Objects.equals(outIntent.getAction(), INTENT_ADD_ACTION)){
+            assert taskDetailFragment != null;
             taskDetailFragment.newTask();
         }
     }
