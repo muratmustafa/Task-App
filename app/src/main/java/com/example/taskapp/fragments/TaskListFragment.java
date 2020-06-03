@@ -11,12 +11,14 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.taskapp.R;
 import com.example.taskapp.TaskDetailActivity;
+import com.example.taskapp.TaskListActivity;
 import com.example.taskapp.adapters.TaskAdapter;
 import com.example.taskapp.models.Task;
 
@@ -28,7 +30,7 @@ public class TaskListFragment extends Fragment {
     private ArrayList<Task> mTasksList;
     private TaskAdapter mAdapter;
 
-    //private OnTaskSelectedListener onTaskSelectedListener;
+    private OnTaskSelectedListener onTaskSelectedListener;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,13 +48,14 @@ public class TaskListFragment extends Fragment {
         addTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*
-                Intent inIntent = new Intent(TaskDetailActivity.INTENT_ADD_ACTION);
-
-                if (inIntent.resolveActivity(getPackageManager()) != null) {
+                if (!TaskListActivity.mTabletMode){
+                    Intent inIntent = new Intent(TaskDetailActivity.INTENT_ADD_ACTION);
                     startActivity(inIntent);
+                }else{
+                    FragmentManager fragmentManager = getFragmentManager();
+                    TaskDetailFragment taskDetailFragment = (TaskDetailFragment) fragmentManager.findFragmentById(R.id.task_detail_container);
+                    taskDetailFragment.newTask();
                 }
-                 */
             }
         });
 
@@ -62,7 +65,7 @@ public class TaskListFragment extends Fragment {
     }
 
     private void setUpRecyclerView(View view) {
-        mAdapter = new TaskAdapter(mTasksList);
+        mAdapter = new TaskAdapter(mTasksList, onTaskSelectedListener);
 
         RecyclerView recyclerView = view.findViewById(R.id.tasks);
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
@@ -77,7 +80,7 @@ public class TaskListFragment extends Fragment {
         mAdapter.notifyDataSetChanged();
     }
 
-    /*@Override
+    @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
@@ -94,6 +97,6 @@ public class TaskListFragment extends Fragment {
     }
 
     public interface OnTaskSelectedListener{
-        void onTaskSElected(Task task);
-    }*/
+        void onTaskSelected(Task task);
+    }
 }

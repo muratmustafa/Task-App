@@ -1,6 +1,7 @@
 package com.example.taskapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,17 +29,15 @@ import com.example.taskapp.models.db.TasksDbRepositoryImpl;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TaskListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Task>> {
+public class TaskListActivity extends AppCompatActivity
+        implements LoaderManager.LoaderCallbacks<List<Task>>,
+        TaskListFragment.OnTaskSelectedListener {
 
-    private ArrayList<Task> mTasksList;
-    private TaskAdapter mAdapter;
     private TasksRepository mRepository;
     private TaskListFragment mTaskListFragment;
 
     public static final String TASK_DETAIL_FRAGMENT_TAG = "TASK_DETAIL_FRAGMENT_TAG";
-
-
-    private boolean mTabletMode = false;
+    public static boolean mTabletMode = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,54 +57,18 @@ public class TaskListActivity extends AppCompatActivity implements LoaderManager
 
         View container = findViewById(R.id.task_detail_container);
         if (container != null) {
-            // Container is included in layout file,
-            // hence we are running on a tablet
             mTabletMode = true;
-
-            // Include PlaceDetailFragment in layout, if not already done
-            // (reuse, if fragment object already exists)
             Fragment taskDetailFragment = fm.findFragmentById(R.id.task_detail_container);
             if (taskDetailFragment == null) {
                 FragmentTransaction t = fm.beginTransaction();
-                // Add fragment and assign tag for later reference
                 taskDetailFragment = TaskDetailFragment.newInstance();
                 t.add(R.id.task_detail_container, taskDetailFragment, TASK_DETAIL_FRAGMENT_TAG);
-//                placeDetailFragment.setRetainInstance(true);
                 t.commit();
             }
         } else {
             mTabletMode = false;
         }
-
-        //mTasksList = new ArrayList<Task>();
-
-        /*Button addTask = findViewById(R.id.addNewTask);
-        addTask.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent inIntent = new Intent(TaskDetailActivity.INTENT_ADD_ACTION);
-
-                if (inIntent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(inIntent);
-                }
-
-            }
-        });*/
-
-        //setUpRecyclerView();
-
-
     }
-
-    /*private void setUpRecyclerView() {
-        mAdapter = new TaskAdapter(mTasksList);
-
-        RecyclerView recyclerView = findViewById(R.id.tasks);
-        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(mAdapter);
-    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -134,7 +97,6 @@ public class TaskListActivity extends AppCompatActivity implements LoaderManager
             default:
                 break;
         }
-
         return true;
     }
 
@@ -154,9 +116,16 @@ public class TaskListActivity extends AppCompatActivity implements LoaderManager
         mTaskListFragment.setTasks(new ArrayList<Task>());
     }
 
-    /*public void setData(List<Task> data){
-        mTasksList.clear();
-        mTasksList.addAll(data);
-        mAdapter.notifyDataSetChanged();
-    }*/
+    @Override
+    public void onTaskSelected(Task task) {
+        if(mTabletMode){
+            FragmentManager fm = getSupportFragmentManager();
+            TaskDetailFragment taskDetailFragment = (TaskDetailFragment) fm.findFragmentByTag(TASK_DETAIL_FRAGMENT_TAG);
+            taskDetailFragment.setSelectedTask(task);
+        }else{
+            Intent inIntent = new Intent(TaskDetailActivity.INTENT_EDIT_ACTION);
+            inIntent.putExtra(TaskDetailActivity.EXTRA_TASK_ID, String.valueOf(task.getId()));
+            startActivity(inIntent);
+        }
+    }
 }

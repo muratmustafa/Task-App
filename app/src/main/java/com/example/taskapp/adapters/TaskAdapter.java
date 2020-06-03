@@ -1,7 +1,6 @@
 package com.example.taskapp.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.taskapp.R;
-import com.example.taskapp.TaskDetailActivity;
+import com.example.taskapp.fragments.TaskListFragment;
 import com.example.taskapp.models.Task;
 import com.example.taskapp.models.TasksRepository;
 import com.example.taskapp.models.db.TasksDbRepositoryImpl;
@@ -25,8 +24,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     private TasksRepository mRepository;
 
-    public TaskAdapter(List<Task> mTaskList) {
+    private TaskListFragment.OnTaskSelectedListener onTaskSelectedListener;
+
+    public TaskAdapter(List<Task> mTaskList, TaskListFragment.OnTaskSelectedListener onTaskSelectedListener) {
         this.mTaskList = mTaskList;
+        this.onTaskSelectedListener = onTaskSelectedListener;
     }
 
     @NonNull
@@ -47,9 +49,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             @Override
             public void onClick(View v) {
                 mTaskList.get(position).setDone(holder.mDone.isChecked());
-
                 mRepository = TasksDbRepositoryImpl.getInstance(holder.context);
-
                 mRepository.updateDone(mTaskList.get(position).getId(), holder.mDone.isChecked());
 
             }
@@ -58,10 +58,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Intent inIntent = new Intent(TaskDetailActivity.INTENT_EDIT_ACTION);
-                inIntent.putExtra(TaskDetailActivity.EXTRA_TASK_ID, String.valueOf(mTaskList.get(position).getId()));
-                holder.context.startActivity(inIntent);
+                onTaskSelectedListener.onTaskSelected(mTaskList.get(position));
             }
         });
     }

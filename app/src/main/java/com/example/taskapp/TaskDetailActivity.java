@@ -3,21 +3,17 @@ package com.example.taskapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.TextView;
 
+import com.example.taskapp.fragments.TaskDetailFragment;
 import com.example.taskapp.models.Task;
 import com.example.taskapp.models.TasksRepository;
 import com.example.taskapp.models.db.TasksDbRepositoryImpl;
 
-import java.text.DateFormat;
-import java.util.Calendar;
 import java.util.Objects;
 
 public class TaskDetailActivity extends AppCompatActivity{
@@ -27,13 +23,6 @@ public class TaskDetailActivity extends AppCompatActivity{
     public static final String INTENT_ADD_ACTION = "com.example.taskapp.ACTION_ADD";
 
     private static final String TASK = "TASK_OBJECT";
-
-    private int flag = 0;
-    private long mTaskID;
-
-    private CheckBox mDone;
-    private EditText mShortName, mDescription;
-    private TextView mCreationDate;
 
     private Task mTask;
     private TasksRepository mRepository;
@@ -47,7 +36,7 @@ public class TaskDetailActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_task_detail);
+        setContentView(R.layout.task_detail);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -55,24 +44,15 @@ public class TaskDetailActivity extends AppCompatActivity{
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        if (savedInstanceState != null){
-            mTask = savedInstanceState.getParcelable(TASK);
-        }
-
         mRepository = TasksDbRepositoryImpl.getInstance(this);
 
-        mShortName = findViewById(R.id.shortNameEditText);
-        mDescription = findViewById(R.id.descriptionEditText);
-        mCreationDate = findViewById(R.id.dateTextView);
-        mDone = findViewById(R.id.doneCheckBox);
-
-        Button saveButton = findViewById(R.id.addNewTask);
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveTask();
-            }
-        });
+        if (savedInstanceState == null) {
+            FragmentManager fm = getSupportFragmentManager();
+            FragmentTransaction t = fm.beginTransaction();
+            TaskDetailFragment taskDetailFragment = TaskDetailFragment.newInstance();
+            t.add(R.id.task_detail_container, taskDetailFragment);
+            t.commit();
+        }
     }
 
     @Override
@@ -81,32 +61,16 @@ public class TaskDetailActivity extends AppCompatActivity{
 
         Intent outIntent = getIntent();
 
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        TaskDetailFragment taskDetailFragment = (TaskDetailFragment) fragmentManager.findFragmentById(R.id.task_detail_container);
+
         if (Objects.equals(outIntent.getAction(), INTENT_EDIT_ACTION)){
-            mTaskID = Integer.parseInt(Objects.requireNonNull(outIntent.getStringExtra(EXTRA_TASK_ID)));
-
+            long mTaskID = Integer.parseInt(Objects.requireNonNull(outIntent.getStringExtra(EXTRA_TASK_ID)));
             mTask = mRepository.getTask(mTaskID);
-
-            mShortName.setText(mTask.getShortName());
-            mDescription.setText(mTask.getDescription());
-            mDone.setChecked(mTask.isDone());
-            mCreationDate.setText(DateFormat.getDateInstance().format(mTask.getCreationDate()));
-
-            flag = 1;
+            taskDetailFragment.setSelectedTask(mTask);
 
         }else if(Objects.equals(outIntent.getAction(), INTENT_ADD_ACTION)){
-            Calendar calendar = Calendar.getInstance();
-            String currentDate = DateFormat.getDateInstance().format(calendar.getTime());
-            mCreationDate.setText(currentDate);
-        }
-    }
-
-    public void saveTask(){
-        if (flag == 1){
-            mRepository.updateTask(mTaskID, mShortName.getText().toString(), mDescription.getText().toString(), mDone.isChecked());
-            onBackPressed();
-        }else{
-            mRepository.addNewTask(mShortName.getText().toString(), mDescription.getText().toString(), mDone.isChecked(), mCreationDate.getText().toString());
-            onBackPressed();
+            taskDetailFragment.newTask();
         }
     }
 
