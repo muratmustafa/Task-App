@@ -83,15 +83,12 @@ public class TaskListActivity extends AppCompatActivity
 
         switch (item.getItemId()){
             case R.id.allTasks:
-                Toast.makeText(context, "Show all tasks", duration).show();
                 mRepository.showAllTasks();
                 break;
             case R.id.unfinishedTasks:
-                Toast.makeText(context, "Show unfinished tasks", duration).show();
                 mRepository.showUnfinishedTasks();
                 break;
             case  R.id.deleteFinishedTasks:
-                Toast.makeText(context, "Delete finished tasks", duration).show();
                 mRepository.deleteFinishedTasks();
                 break;
             default:
@@ -121,6 +118,7 @@ public class TaskListActivity extends AppCompatActivity
         if(mTabletMode){
             FragmentManager fm = getSupportFragmentManager();
             TaskDetailFragment taskDetailFragment = (TaskDetailFragment) fm.findFragmentByTag(TASK_DETAIL_FRAGMENT_TAG);
+            assert taskDetailFragment != null;
             taskDetailFragment.setSelectedTask(task);
         }else{
             Intent inIntent = new Intent(TaskDetailActivity.INTENT_EDIT_ACTION);

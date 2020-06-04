@@ -136,6 +136,17 @@ public class TasksDbRepositoryImpl implements TasksRepository {
     }
 
     @Override
+    public void deleteTask(long id) {
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+
+        db.delete(DB_TASKS_TABLE, KEY_ID + " = ?" , new String[]{Long.toString(id)});
+
+        if (mDataObserver != null){
+            mDataObserver.onDataChanged();
+        }
+    }
+
+    @Override
     public void showUnfinishedTasks() {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 
@@ -173,6 +184,26 @@ public class TasksDbRepositoryImpl implements TasksRepository {
         values.put(KEY_DESCRIPTION, description);
         values.put(KEY_DONE, done);
         values.put(KEY_DATE, date);
+
+        db.insert(DB_TASKS_TABLE, null, values);
+
+        db.close();
+
+        if (mDataObserver != null){
+            mDataObserver.onDataChanged();
+        }
+    }
+
+    @Override
+    public void undoTask(Task task) {
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_ID, task.getId());
+        values.put(KEY_SHORT_NAME, task.getShortName());
+        values.put(KEY_DESCRIPTION, task.getDescription());
+        values.put(KEY_DONE, task.isDone());
+        values.put(KEY_DATE, DateFormat.getDateInstance().format(task.getCreationDate()));
 
         db.insert(DB_TASKS_TABLE, null, values);
 
